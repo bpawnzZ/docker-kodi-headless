@@ -55,7 +55,19 @@ jobs:
         file: Dockerfile.wayland
         platforms: linux/amd64
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-wayland:${{ github.sha }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build X11 Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: Dockerfile.x11
+        platforms: linux/amd64
+        push: ${{ github.event_name != 'pull_request' }}
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-x11:${{ github.sha }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -90,27 +102,28 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build test image
-      uses: docker/build-push-action@v5
-      with:
-        context: .
-        file: Dockerfile.wayland
-        platforms: linux/amd64
-        load: true
-        tags: kodi-wayland-test:latest
+    - name: Build test images
+      run: |
+        docker build -f Dockerfile.wayland -t kodi-wayland-test:latest .
+        docker build -f Dockerfile.x11 -t kodi-x11-test:latest .
 
-    - name: Test image
+    - name: Test images
       run: |
         echo "Running basic image tests..."
-        # Test that required binaries are present
-        docker run --rm kodi-wayland-test:latest which weston && echo "Weston found" || echo "Weston not found"
-        docker run --rm kodi-wayland-test:latest which vainfo && echo "VAInfo found" || echo "VAInfo not found"
         
-        # Test that Kodi binary exists (don't run it as it needs display)
-        docker run --rm kodi-wayland-test:latest which kodi && echo "Kodi binary found" || echo "Kodi binary not found"
+        # Test Wayland image
+        echo "Testing Wayland image..."
+        docker run --rm kodi-wayland-test:latest which kodi && echo "Kodi binary found in Wayland image" || echo "Kodi binary not found in Wayland image"
+        docker run --rm kodi-wayland-test:latest which vainfo && echo "VAInfo found in Wayland image" || echo "VAInfo not found in Wayland image"
+        
+        # Test X11 image
+        echo "Testing X11 image..."
+        docker run --rm kodi-x11-test:latest which kodi && echo "Kodi binary found in X11 image" || echo "Kodi binary not found in X11 image"
+        docker run --rm kodi-x11-test:latest which vainfo && echo "VAInfo found in X11 image" || echo "VAInfo not found in X11 image"
         
         # Test basic container functionality
-        docker run --rm kodi-wayland-test:latest echo "Container test successful"
+        docker run --rm kodi-wayland-test:latest echo "Wayland container test successful"
+        docker run --rm kodi-x11-test:latest echo "X11 container test successful"
 
   release:
     name: Create Release

@@ -1,0 +1,55 @@
+#!/usr/bin/with-contenv bash
+
+# Configure X11 for Kodi
+
+# Create X11 configuration directory
+mkdir -p /tmp/.X11-unix
+
+# Set up X11 display
+DISPLAY=${DISPLAY:-:0}
+export DISPLAY
+
+# Create dummy X11 configuration for headless operation
+cat > /tmp/xorg.conf << EOF
+Section "Device"
+    Identifier  "DummyDevice"
+    Driver      "dummy"
+    Option      "IgnoreEDID" "true"
+    Option      "NoDDC" "true"
+EndSection
+
+Section "Monitor"
+    Identifier  "DummyMonitor"
+    HorizSync   31.5-48.5
+    VertRefresh 50-70
+EndSection
+
+Section "Screen"
+    Identifier "DefaultScreen"
+    Monitor    "DummyMonitor"
+    Device     "DummyDevice"
+    DefaultDepth 24
+    SubSection "Display"
+        Depth 24
+        Modes "1920x1080"
+    EndSubSection
+EndSection
+EOF
+
+# Set up X11 authority
+mkdir -p /tmp/.Xauthority
+xauth add ${DISPLAY} . $(mcookie)
+
+# Set permissions
+chown -R abc:abc /tmp/.X11-unix
+chown -R abc:abc /tmp/.Xauthority
+
+# Verify VAAPI is working
+echo "Checking VAAPI support..."
+vainfo 2>/dev/null && echo "VAAPI detected and working" || echo "VAAPI not available"
+
+# Set Kodi to use X11
+export KODI_DISPLAY=${DISPLAY}
+
+# Log X11 setup
+echo "X11 display configured: ${DISPLAY}"

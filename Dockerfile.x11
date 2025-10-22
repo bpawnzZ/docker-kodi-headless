@@ -1,0 +1,57 @@
+# Dockerfile.x11 - Kodi with X11 and VAAPI hardware acceleration
+FROM lsiobase/ubuntu:focal
+
+# Set environment variables
+ENV DEBIAN_FRONTEND="noninteractive" \
+    HOME="/config"
+
+# Install Kodi and X11 dependencies
+RUN \
+  echo "**** install packages ****" && \
+  apt-get update && \
+  apt-get install -y \
+    kodi \
+    kodi-pvr-iptvsimple \
+    kodi-inputstream-adaptive \
+    kodi-inputstream-rtmp \
+    xorg \
+    xserver-xorg-video-dummy \
+    xinit \
+    mesa-utils \
+    vainfo \
+    intel-media-va-driver-non-free \
+    i965-va-driver-shaders \
+    libva2 \
+    libva-drm2 \
+    libva-x11-2 \
+    libva-wayland2 \
+    pulseaudio \
+    pulseaudio-utils \
+    alsa-utils \
+    wget \
+    curl \
+    unzip && \
+  \
+  echo "**** cleanup ****" && \
+  apt-get clean && \
+  rm -rf \
+    /tmp/* \
+    /var/lib/apt/lists/* \
+    /var/tmp/*
+
+# Add local files
+COPY root/ /
+
+# Volumes and ports
+VOLUME /config
+EXPOSE 8080 9090 9777/udp
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=300s --retries=3 \
+  CMD curl -f http://localhost:8080 || exit 1
+
+# Set working directory
+WORKDIR /config
+
+# Default command
+CMD ["/init"]

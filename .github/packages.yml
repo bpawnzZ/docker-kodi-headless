@@ -1,14 +1,17 @@
-name: Docker Kodi Wayland
+name: Docker Kodi Headless
 
 description: |
-  Docker container for Kodi with Wayland display server and VAAPI hardware acceleration.
+  Docker containers for Kodi with multiple display server options and VAAPI hardware acceleration.
+  
+  Available versions:
+  - **X11**: More stable and reliable with better Docker support
+  - **Wayland**: Modern display server with Weston compositor
   
   Features:
-  - Wayland windowing system support
   - VAAPI hardware acceleration for video decoding
   - NVIDIA GPU support via nvidia-docker
-  - Weston Wayland compositor included
   - Hardware-accelerated video playback
+  - Web interface for remote control
 
 category: container
 
@@ -16,6 +19,7 @@ topics:
   - kodi
   - docker
   - wayland
+  - x11
   - vaapi
   - hardware-acceleration
   - media-center
@@ -27,19 +31,31 @@ supported_platforms:
 installation: |
   ## Quick Start
   
+  ### X11 Version (Recommended - More Stable)
   ```bash
-  # Pull the latest image
-  docker pull ghcr.io/bpawnzZ/docker-kodi-headless:latest
+  # Pull X11 image
+  docker pull ghcr.io/bpawnzZ/docker-kodi-headless-x11:latest
   
-  # Run with NVIDIA support
-  docker run -d --name kodi-wayland --runtime=nvidia --privileged \
-    -v /dev/dri:/dev/dri \
-    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
-    -e NVIDIA_VISIBLE_DEVICES=all \
-    -e NVIDIA_DRIVER_CAPABILITIES=all \
-    -p 8080:8080 \
-    -p 9090:9090 \
-    ghcr.io/bpawnzZ/docker-kodi-headless:latest
+  # Run X11 version
+  docker run -d --name kodi-x11 --privileged \\
+    -v /dev/dri:/dev/dri \\
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \\
+    -p 8080:8080 \\
+    -p 9090:9090 \\
+    ghcr.io/bpawnzZ/docker-kodi-headless-x11:latest
+  ```
+
+  ### Wayland Version
+  ```bash
+  # Pull Wayland image
+  docker pull ghcr.io/bpawnzZ/docker-kodi-headless-wayland:latest
+  
+  # Run Wayland version
+  docker run -d --name kodi-wayland --privileged \\
+    -v /dev/dri:/dev/dri \\
+    -p 8080:8080 \\
+    -p 9090:9090 \\
+    ghcr.io/bpawnzZ/docker-kodi-headless-wayland:latest
   ```
 
   For more details, see the [README-wayland.md](README-wayland.md) file.
