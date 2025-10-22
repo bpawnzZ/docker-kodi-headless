@@ -22,8 +22,6 @@ RUN \
   echo "**** install Kodi and dependencies ****" && \
   apt-get install -y \
     kodi \
-    kodi-bin \
-    kodi-data \
     xorg \
     xserver-xorg-video-dummy \
     xinit \
