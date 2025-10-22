@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository | lower }}
 
 jobs:
   build:
@@ -55,7 +55,7 @@ jobs:
         file: Dockerfile.wayland
         platforms: linux/amd64
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-wayland:${{ github.sha }}
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-wayland:latest
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -67,7 +67,7 @@ jobs:
         file: Dockerfile.x11
         platforms: linux/amd64
         push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-x11:${{ github.sha }}
+        tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-x11:latest
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
         cache-to: type=gha,mode=max
