@@ -7,13 +7,13 @@ ENV DEBIAN_FRONTEND="noninteractive" \
 
 # Install Kodi and X11 dependencies from Ubuntu repositories
 RUN \
-  echo "**** install packages ****" && \
+  echo "**** update package lists ****" && \
   apt-get update && \
+  \
+  echo "**** install core dependencies ****" && \
   apt-get install -y \
-    kodi \
-    kodi-pvr-iptvsimple \
-    kodi-inputstream-adaptive \
-    kodi-inputstream-rtmp \
+    curl \
+    wget \
     xorg \
     xserver-xorg-video-dummy \
     xinit \
@@ -26,9 +26,10 @@ RUN \
     libva-x11-2 \
     pulseaudio \
     pulseaudio-utils \
-    alsa-utils \
-    curl \
-    wget && \
+    alsa-utils && \
+  \
+  echo "**** install Kodi ****" && \
+  apt-get install -y kodi && \
   \
   echo "**** cleanup ****" && \
   apt-get clean && \
