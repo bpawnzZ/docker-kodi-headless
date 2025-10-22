@@ -1,0 +1,45 @@
+name: Docker Kodi Wayland
+
+description: |
+  Docker container for Kodi with Wayland display server and VAAPI hardware acceleration.
+  
+  Features:
+  - Wayland windowing system support
+  - VAAPI hardware acceleration for video decoding
+  - NVIDIA GPU support via nvidia-docker
+  - Weston Wayland compositor included
+  - Hardware-accelerated video playback
+
+category: container
+
+topics:
+  - kodi
+  - docker
+  - wayland
+  - vaapi
+  - hardware-acceleration
+  - media-center
+  - home-theater
+
+supported_platforms:
+  - linux/amd64
+
+installation: |
+  ## Quick Start
+  
+  ```bash
+  # Pull the latest image
+  docker pull ghcr.io/bpawnzZ/docker-kodi-headless:latest
+  
+  # Run with NVIDIA support
+  docker run -d --name kodi-wayland --runtime=nvidia --privileged \
+    -v /dev/dri:/dev/dri \
+    -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+    -e NVIDIA_VISIBLE_DEVICES=all \
+    -e NVIDIA_DRIVER_CAPABILITIES=all \
+    -p 8080:8080 \
+    -p 9090:9090 \
+    ghcr.io/bpawnzZ/docker-kodi-headless:latest
+  ```
+
+  For more details, see the [README-wayland.md](README-wayland.md) file.

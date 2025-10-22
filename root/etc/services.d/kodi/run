@@ -1,4 +1,11 @@
 #!/usr/bin/with-contenv bash
 
-	s6-setuidgid abc \
-	/usr/bin/kodi --headless
+# Start Weston Wayland compositor in background
+s6-setuidgid abc weston --backend=headless-backend.so &
+
+# Wait for Wayland display to be ready
+sleep 2
+
+# Launch Kodi with Wayland
+s6-setuidgid abc \
+	/usr/bin/kodi --windowing=wayland
