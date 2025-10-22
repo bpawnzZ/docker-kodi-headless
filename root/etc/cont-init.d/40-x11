@@ -38,7 +38,9 @@ EOF
 
 # Set up X11 authority
 mkdir -p /tmp/.Xauthority
-xauth add ${DISPLAY} . $(mcookie)
+if command -v xauth >/dev/null 2>&1; then
+    xauth add ${DISPLAY} . $(mcookie)
+fi
 
 # Set permissions
 chown -R abc:abc /tmp/.X11-unix
@@ -46,7 +48,11 @@ chown -R abc:abc /tmp/.Xauthority
 
 # Verify VAAPI is working
 echo "Checking VAAPI support..."
-vainfo 2>/dev/null && echo "VAAPI detected and working" || echo "VAAPI not available"
+if command -v vainfo >/dev/null 2>&1; then
+    vainfo 2>/dev/null && echo "VAAPI detected and working" || echo "VAAPI not available"
+else
+    echo "VAAPI tools not installed"
+fi
 
 # Set Kodi to use X11
 export KODI_DISPLAY=${DISPLAY}

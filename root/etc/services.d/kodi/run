@@ -1,11 +1,11 @@
 #!/usr/bin/with-contenv bash
 
-# Start Weston Wayland compositor in background
-s6-setuidgid abc weston --backend=headless-backend.so &
+# Start X11 server in background
+s6-setuidgid abc Xorg -noreset +extension GLX +extension RANDR +extension RENDER -logfile /tmp/xorg.log -config /tmp/xorg.conf :0 &
 
-# Wait for Wayland display to be ready
-sleep 2
+# Wait for X11 to be ready
+sleep 3
 
-# Launch Kodi with Wayland
+# Launch Kodi with X11
 s6-setuidgid abc \
-	/usr/bin/kodi --windowing=wayland
+	/usr/bin/kodi

@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   kodi-x11:
+    image: ghcr.io/bpawnzz/docker-kodi-headless-wayland:latest
     build:
       context: .
       dockerfile: Dockerfile.x11
@@ -23,6 +24,7 @@ services:
 
   # NVIDIA GPU support (uncomment if you have NVIDIA GPU)
   # kodi-x11-nvidia:
+  #   image: ghcr.io/bpawnzz/docker-kodi-headless-wayland:latest
   #   build:
   #     context: .
   #     dockerfile: Dockerfile.x11

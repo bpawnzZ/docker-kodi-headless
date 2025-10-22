@@ -1,4 +1,4 @@
-# Dockerfile.x11 - Kodi with X11 and VAAPI hardware acceleration
+# Dockerfile.x11-fixed - Kodi with X11 and VAAPI hardware acceleration
 FROM lsiobase/ubuntu:focal
 
 # Set environment variables
@@ -41,6 +41,9 @@ RUN \
 
 # Add local files
 COPY root/ /
+
+# Remove Wayland service and init scripts
+RUN rm -rf /etc/services.d/kodi-wayland /etc/cont-init.d/40-wayland
 
 # Volumes and ports
 VOLUME /config
