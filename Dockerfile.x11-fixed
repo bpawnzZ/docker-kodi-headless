@@ -42,8 +42,15 @@ RUN \
 # Add local files
 COPY root/ /
 
+# Add user abc to video group for VAAPI access
+RUN usermod -aG video abc
+
 # Remove Wayland service and init scripts
 RUN rm -rf /etc/services.d/kodi-wayland /etc/cont-init.d/40-wayland
+
+# Copy test script
+COPY test-vaapi.sh /usr/local/bin/test-vaapi.sh
+RUN chmod +x /usr/local/bin/test-vaapi.sh
 
 # Volumes and ports
 VOLUME /config

@@ -7,7 +7,6 @@ services:
       context: .
       dockerfile: Dockerfile.x11
     container_name: kodi-x11
-    privileged: true
     environment:
       - PUID=1000
       - PGID=1000
@@ -15,8 +14,11 @@ services:
       - DISPLAY=:0
     volumes:
       - ./config:/config
-      - /dev/dri:/dev/dri
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
+    devices:
+      - /dev/dri:/dev/dri
+    group_add:
+      - 985  # video group ID
     ports:
       - "8080:8080"
       - "9090:9090"
