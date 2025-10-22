@@ -5,23 +5,15 @@ FROM lsiobase/ubuntu:focal
 ENV DEBIAN_FRONTEND="noninteractive" \
     HOME="/config"
 
-# Install Kodi and X11 dependencies
+# Install Kodi and X11 dependencies from Ubuntu repositories
 RUN \
   echo "**** install packages ****" && \
   apt-get update && \
   apt-get install -y \
-    software-properties-common \
-    curl \
-    wget \
-    gnupg && \
-  \
-  echo "**** add Kodi PPA ****" && \
-  add-apt-repository -y ppa:team-xbmc/ppa && \
-  apt-get update && \
-  \
-  echo "**** install Kodi and dependencies ****" && \
-  apt-get install -y \
     kodi \
+    kodi-pvr-iptvsimple \
+    kodi-inputstream-adaptive \
+    kodi-inputstream-rtmp \
     xorg \
     xserver-xorg-video-dummy \
     xinit \
@@ -34,13 +26,9 @@ RUN \
     libva-x11-2 \
     pulseaudio \
     pulseaudio-utils \
-    alsa-utils && \
-  \
-  echo "**** install Kodi addons ****" && \
-  apt-get install -y \
-    kodi-pvr-iptvsimple \
-    kodi-inputstream-adaptive \
-    kodi-inputstream-rtmp && \
+    alsa-utils \
+    curl \
+    wget && \
   \
   echo "**** cleanup ****" && \
   apt-get clean && \
